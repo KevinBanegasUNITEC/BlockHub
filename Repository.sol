@@ -13,4 +13,18 @@ contract Repository is ERC721{
         repoFolderCID = _repoCID;
         repoOwnerAddr = _creator;
     }
+
+    // Get Folder CID
+    function getRepoFolderCID() external view returns (string memory) {
+        return repoFolderCID;
+    } 
+
+    // Get owner
+    function getRepoOwner() external view returns (address) {
+        return repoOwnerAddr;
+    }
+    
+    function getRepoName() external view returns (string memory) {
+        return repoName;
+    }
 }
