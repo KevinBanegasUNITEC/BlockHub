@@ -19,6 +19,38 @@ contract RepositoryFactory is ERC721Enumerable {
         emit CreatedSuccessfully(tokenId, msg.sender, _repoCID);
     }
 
+    function getAllReposByOwner() external view returns (
+        string[] memory folderCIDs, 
+        uint256[] memory tokens,
+        string[] memory name) {
+        uint256 count = balanceOf(msg.sender);
+        folderCIDs = new string[](count);
+        tokens = new uint256[](count);
+        name = new string[](count);
+        for (uint256 i = 0; i < count; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(msg.sender, i);
+            folderCIDs[i] = repositories[tokenId].getRepoFolderCID();
+            tokens[i] = tokenId;
+            name[i] = repositories[tokenId].getRepoName();
+        }
+    }
+
+    function getAllRepos() external view returns (string[] memory folderCIDs, uint256[] memory tokens, address[] memory owners, string[] memory names) {
+        uint256 count = totalSupply();
+        folderCIDs = new string[](count);
+        tokens = new uint256[](count);
+        owners = new address[](count);
+        names = new string[](count);
+
+        for (uint256 i = 0; i < count; i++) {
+            uint256 tokenId = tokenByIndex(i);
+            folderCIDs[i] = repositories[tokenId].getRepoFolderCID();
+            tokens[i] = tokenId;
+            owners[i] = ownerOf(tokenId);
+            names[i] = repositories[tokenId].getRepoName();
+        }
+    }
+
     event CreatedSuccessfully(
         uint256 indexed tokenId,
         address indexed owner,
