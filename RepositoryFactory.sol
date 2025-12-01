@@ -35,6 +35,16 @@ contract RepositoryFactory is ERC721Enumerable {
         }
     }
 
+    function processNewCommit(
+        uint256 _tokenId, 
+        string memory message, 
+        string memory commitCID) public 
+    {
+        Repository repo = repositories[_tokenId];
+        repo.addPendingCommit(message, payable (msg.sender), commitCID);
+        emit processedCommit(_tokenId, repo.getRepoOwner(), msg.sender, repo.getRepoFolderCID());
+    }
+
     function getAllRepos() external view returns (string[] memory folderCIDs, uint256[] memory tokens, address[] memory owners, string[] memory names) {
         uint256 count = totalSupply();
         folderCIDs = new string[](count);
@@ -51,9 +61,28 @@ contract RepositoryFactory is ERC721Enumerable {
         }
     }
 
+    function retrieveCommits(uint256 _tokenId) public view returns(
+        string[] memory messages,
+        uint256[] memory timestamps,
+        address[] memory committers,
+        uint256[] memory status,
+        string[] memory commitCIDs
+        )
+    {
+        Repository repo = repositories[_tokenId];
+        return repo.getCommits();
+    }
+
     event CreatedSuccessfully(
         uint256 indexed tokenId,
         address indexed owner,
+        string repoCID
+    );
+
+    event processedCommit(
+        uint256 indexed tokenId,
+        address indexed owner,
+        address indexed committer,
         string repoCID
     );
 }
