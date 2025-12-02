@@ -22,6 +22,12 @@ contract Repository is ERC721{
         repoOwnerAddr = _creator;
     }
 
+    //Modificador para indicar que solo el dueno puede ejecutar
+    modifier onlyRepoOwner(address sender) {
+        require(sender != repoOwnerAddr, "No eres el dueno del repositorio");
+        _;
+    }
+
     // Get Folder CID
     function getRepoFolderCID() external view returns (string memory) {
         return repoFolderCID;
@@ -67,6 +73,14 @@ contract Repository is ERC721{
             status: 0
         });
         _commits.push(newCommit);
+    }
+
+    // Reject a commit without paying
+    function rejectCommit(uint256 _commitIndex, address sender) external onlyRepoOwner(sender) returns (address){
+        Commit storage c = _commits[_commitIndex];
+        require(c.status == 0, "Commit already processed");
+        c.status = 2;
+        return c.committer;
     }
     
     function getRepoName() external view returns (string memory) {

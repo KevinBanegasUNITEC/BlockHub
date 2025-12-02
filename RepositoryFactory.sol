@@ -45,6 +45,15 @@ contract RepositoryFactory is ERC721Enumerable {
         emit processedCommit(_tokenId, repo.getRepoOwner(), msg.sender, repo.getRepoFolderCID());
     }
 
+    function rejectCommit(
+        uint256 _tokenId,
+        uint256 commitIndex) public
+    {
+        Repository repo = repositories[_tokenId];
+        address commiter = repo.rejectCommit(commitIndex, msg.sender);
+        emit rejectedCommit(commiter, repo.getRepoOwner(), repo.getRepoFolderCID());
+    }
+
     function getAllRepos() external view returns (string[] memory folderCIDs, uint256[] memory tokens, address[] memory owners, string[] memory names) {
         uint256 count = totalSupply();
         folderCIDs = new string[](count);
@@ -83,6 +92,12 @@ contract RepositoryFactory is ERC721Enumerable {
         uint256 indexed tokenId,
         address indexed owner,
         address indexed committer,
+        string repoCID
+    );
+
+    event rejectedCommit(
+        address indexed committer,
+        address indexed rejectedBy,
         string repoCID
     );
 }
