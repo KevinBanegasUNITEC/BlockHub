@@ -24,7 +24,7 @@ contract Repository is ERC721{
 
     //Modificador para indicar que solo el dueno puede ejecutar
     modifier onlyRepoOwner(address sender) {
-        require(sender != repoOwnerAddr, "No eres el dueno del repositorio");
+        require(sender == repoOwnerAddr, "No eres el dueno del repositorio");
         _;
     }
 
