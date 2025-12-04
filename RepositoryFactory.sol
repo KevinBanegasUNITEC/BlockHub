@@ -19,6 +19,17 @@ contract RepositoryFactory is ERC721Enumerable {
         emit CreatedSuccessfully(tokenId, msg.sender, _repoCID);
     }
 
+    //Depositar ETH en el repositorio
+    function depositToRepo(uint256 _tokenId) external payable {
+        Repository repo = repositories[_tokenId];
+        require(msg.value > 0, "Must send ETH");
+
+        // Forward ETH to the repository contract
+        (bool success, ) = address(repo).call{value: msg.value}("");
+        require(success, "ETH deposit failed");
+        emit depositedETH(_tokenId, msg.sender, msg.value);
+    }
+
     function getAllReposByOwner() external view returns (
         string[] memory folderCIDs, 
         uint256[] memory tokens,
@@ -82,6 +93,10 @@ contract RepositoryFactory is ERC721Enumerable {
         return repo.getCommits();
     }
 
+    function getBalance(uint256 _tokenId) public view returns(uint256){
+        return repositories[_tokenId].getBalance();
+    }
+
     event CreatedSuccessfully(
         uint256 indexed tokenId,
         address indexed owner,
@@ -99,5 +114,11 @@ contract RepositoryFactory is ERC721Enumerable {
         address indexed committer,
         address indexed rejectedBy,
         string repoCID
+    );
+
+    event depositedETH(
+        uint256 indexed tokenId,      
+        address indexed owner,        
+        uint256 amount
     );
 }

@@ -22,6 +22,12 @@ contract Repository is ERC721{
         repoOwnerAddr = _creator;
     }
 
+    receive() external payable {}
+
+    function getBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
+
     //Modificador para indicar que solo el dueno puede ejecutar
     modifier onlyRepoOwner(address sender) {
         require(sender == repoOwnerAddr, "No eres el dueno del repositorio");
