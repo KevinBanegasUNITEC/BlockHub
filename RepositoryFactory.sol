@@ -56,6 +56,13 @@ contract RepositoryFactory is ERC721Enumerable {
         emit processedCommit(_tokenId, repo.getRepoOwner(), msg.sender, repo.getRepoFolderCID());
     }
 
+    function approveCommit(uint256 _tokenId, uint256 commitIndex, uint256 reward) public payable {
+        Repository repo = repositories[_tokenId];
+        repo.acceptCommit(commitIndex, reward, msg.sender);
+    
+        emit approvedCommit(_tokenId, repo.getRepoOwner(), repo.getRepoFolderCID());
+    }
+
     function rejectCommit(
         uint256 _tokenId,
         uint256 commitIndex) public
@@ -107,6 +114,12 @@ contract RepositoryFactory is ERC721Enumerable {
         uint256 indexed tokenId,
         address indexed owner,
         address indexed committer,
+        string repoCID
+    );
+
+    event approvedCommit(
+        uint256 indexed tokenId,
+        address indexed owner,
         string repoCID
     );
 
