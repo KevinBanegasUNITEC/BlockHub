@@ -81,6 +81,21 @@ contract Repository is ERC721{
         _commits.push(newCommit);
     }
 
+    //Accept pending commit
+    function acceptCommit(uint256 _commitIndex, uint256 rewardAmount, address sender) external payable onlyRepoOwner(sender){
+        Commit storage c = _commits[_commitIndex];
+        require(c.status == 0, "Commit already processed");
+        require(address(this).balance >= rewardAmount, "Not enough ETH in contract");
+
+        // Mark commit as accepted
+        c.status = 1;
+        repoFolderCID = c.commitCID;
+
+        // Pay committer
+        (bool success, ) = c.committer.call{value: rewardAmount}("");
+        require(success, "Payment failed");
+    }
+
     // Reject a commit without paying
     function rejectCommit(uint256 _commitIndex, address sender) external onlyRepoOwner(sender) returns (address){
         Commit storage c = _commits[_commitIndex];
