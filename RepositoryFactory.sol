@@ -4,6 +4,11 @@ pragma solidity ^0.8.28;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./Repository.sol";
 
+/**
+ * @title RepositoryFactory
+ * @dev Factory contract para crear y gestionar múltiples repositorios descentralizados
+ * Cada repositorio es representado como un NFT (ERC721)
+ */
 contract RepositoryFactory is ERC721Enumerable {
 
     constructor() ERC721("RepositoryFactory", "REPO") {}
