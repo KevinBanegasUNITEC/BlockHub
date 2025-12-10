@@ -14,11 +14,6 @@ contract RepositoryFactory is ERC721Enumerable {
     constructor() ERC721("RepositoryFactory", "REPO") {}
 
     mapping (uint256 => Repository) private repositories;
-    
-    mapping(address => bool) private hasFirstRepo;
-    mapping(address => bool) private hasFirstCommit;
-    mapping(address => uint256) private userCommitCount;
-    mapping(address => uint256) private userApprovalCount;
 
     function createRepository(string memory _repoName, string memory _repoCID) public {
         uint256 tokenId = totalSupply() + 1;
@@ -81,8 +76,6 @@ contract RepositoryFactory is ERC721Enumerable {
     function approveCommit(uint256 _tokenId, uint256 commitIndex, uint256 reward) public payable {
         Repository repo = repositories[_tokenId];
         repo.acceptCommit(commitIndex, reward, msg.sender);
-
-        userApprovalCount[msg.sender]++;
     
         emit approvedCommit(_tokenId, repo.getRepoOwner(), repo.getRepoFolderCID());
     }
